@@ -1,6 +1,9 @@
 #include "debug.h"
 
+#include "executor.h"
 #include "lexer.h"
+#include "parser.h"
+#include "stmt.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -101,8 +104,20 @@ int main(int argc, char **argv) {
     free(buf);
 
     // continue
-
+    Parser parser = parser_new(tokens);
+    Stmt *stmts = parser.parse(&parser);
+    if (!stmts) {
+        free_tokens(tokens);
+        return EXIT_FAILURE;
+    }
     free_tokens(tokens);
+
+    Executor executor = executor_new(stmts);
+    if (executor.execute(&executor) != 0) {
+        free_stmts(stmts);
+        return EXIT_FAILURE;
+    }
+    free_stmts(stmts);
 
     return EXIT_SUCCESS;
 }

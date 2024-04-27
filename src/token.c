@@ -9,3 +9,5 @@ Token token_default(void) {
         .line = -1,
     };
 }
+
+bool is_unary_op(Token t) { return t.type == TT_BANG || t.type == TT_MINUS; }

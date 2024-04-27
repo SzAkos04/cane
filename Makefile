@@ -1,7 +1,7 @@
 CC := gcc
 PROJECT := cane
 CFLAGS := -Wall -Wextra -Werror -Wpedantic
-LDFLAGS :=
+LDFLAGS := -lm
 INCLUDES := -Iinclude
 SRC_DIR := src
 SRC := $(wildcard $(SRC_DIR)/*.c)

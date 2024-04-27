@@ -56,3 +56,5 @@ typedef struct {
 } Token;
 
 Token token_default(void);
+
+bool is_unary_op(Token);

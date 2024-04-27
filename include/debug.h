@@ -17,3 +17,5 @@
         fprintf(stderr, "%scane: %serror%s: ", BOLD, BOLD_RED, RESET);         \
         perror(msg);                                                           \
     } while (0)
+
+#define MAYBE_UNUSED __attribute__((unused))
