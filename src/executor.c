@@ -151,3 +151,5 @@ Executor executor_new(Stmt *stmts) {
 
     return e;
 }
+
+void free_executor(Executor e) { free(e.vars); }

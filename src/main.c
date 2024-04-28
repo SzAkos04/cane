@@ -129,6 +129,8 @@ int main(int argc, char **argv) {
     }
     free_stmts(stmts);
 
+    free_executor(executor);
+
     return EXIT_SUCCESS;
 }
 

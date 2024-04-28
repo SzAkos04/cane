@@ -21,3 +21,4 @@ typedef struct Executor {
 } Executor;
 
 Executor executor_new(Stmt *stmts);
+void free_executor(Executor);
