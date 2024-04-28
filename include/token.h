@@ -39,6 +39,8 @@ typedef enum {
     TT_IDENTIFIER,
     TT_STRING,
     TT_NUMBER,
+    TT_BOOL,
+    TT_NULL,
 
     // keywords
     TT_PRINT, // `print`

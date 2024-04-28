@@ -317,8 +317,12 @@ static Token next(Lexer *self) {
             lexeme[len] = '\0';
 
             TokenType tt = TT_IDENTIFIER;
-            if (strcmp(lexeme, "print") == 0) {
+            if (!strcmp(lexeme, "print")) {
                 tt = TT_PRINT;
+            } else if (!strcmp(lexeme, "true") || !strcmp(lexeme, "false")) {
+                tt = TT_BOOL;
+            } else if (!strcmp(lexeme, "null")) {
+                tt = TT_NULL;
             }
 
             Token token = (Token){
@@ -364,10 +368,6 @@ static Token *lex(Lexer *self) {
         }
         tokens[i] = next(self);
         if (tokens[i].type == TT_UNKNOWN) {
-            /* char error_msg[64]; */
-            /* sprintf(error_msg, "unknown token `%s` at line %i", */
-            /*         tokens[i].lexeme, tokens[i].line); */
-            /* error(error_msg); */
             return NULL;
         }
         i++;

@@ -2,6 +2,7 @@
 #include "executor.h"
 #include "literal.h"
 #include "stmt.h"
+
 #include <stdio.h>
 
 static int execute_print(Executor *self) {
@@ -11,6 +12,23 @@ static int execute_print(Executor *self) {
         case LITERAL_STRING:
             printf("%s\n", self->stmts[self->current]
                                .data.Print.expr.data.Literal.data.Str);
+            break;
+        case LITERAL_INTEGER:
+            printf("%ld\n", self->stmts[self->current]
+                                .data.Print.expr.data.Literal.data.Integer);
+            break;
+        case LITERAL_FLOAT:
+            printf("%g\n", self->stmts[self->current]
+                               .data.Print.expr.data.Literal.data.Float);
+            break;
+        case LITERAL_BOOLEAN:
+            printf("%s\n", self->stmts[self->current]
+                                   .data.Print.expr.data.Literal.data.Boolean
+                               ? "true"
+                               : "false");
+            break;
+        case LITERAL_NULL:
+            printf("(null)\n");
             break;
         default:
             error("not yet implemented");
@@ -25,8 +43,6 @@ static int execute_print(Executor *self) {
 }
 
 static int execute(Executor *self) {
-    (void)self;
-
     while (self->stmts[self->current].type != STMT_EOF) {
         switch (self->stmts[self->current].type) {
         case STMT_PRINT:

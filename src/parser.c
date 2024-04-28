@@ -6,9 +6,11 @@
 #include "token.h"
 
 #include <math.h>
+#include <stdbool.h>
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 static Literal parse_literal(Parser *self) {
     Token token = self->tokens[self->current];
@@ -36,6 +38,16 @@ static Literal parse_literal(Parser *self) {
                 .data.Float = strtod(token.lexeme, NULL),
             };
         }
+    case TT_BOOL:
+        return (Literal){
+            .type = LITERAL_BOOLEAN,
+            .data.Boolean = !strcmp(token.lexeme, "true"),
+        };
+    case TT_NULL:
+        return (Literal){
+            .type = LITERAL_NULL,
+            .data.null = NULL,
+        };
     default:
         error("parsing literals not yet implemented");
         return (Literal){.type = LITERAL_NULL};
@@ -53,7 +65,7 @@ static Expr parse_unary(Parser *self) {
         .data.Unary =
             {
                 .operator= op,
-                .right = (struct Expr *)&right,
+                .right = &right,
             },
     };
 }
@@ -62,8 +74,10 @@ static Expr parse_expr(Parser *self) {
     // TODO: temporary
     if (is_unary_op(self->tokens[self->current])) {
         return parse_unary(self);
-    } else if (self->tokens[self->current].type == TT_NUMBER ||
-               self->tokens[self->current].type == TT_STRING) {
+    } else if (self->tokens[self->current].type == TT_STRING ||
+               self->tokens[self->current].type == TT_NUMBER ||
+               self->tokens[self->current].type == TT_BOOL ||
+               self->tokens[self->current].type == TT_NULL) {
         return (Expr){
             .type = EXPR_LITERAL,
             .data.Literal = parse_literal(self),

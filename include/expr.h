@@ -3,7 +3,7 @@
 #include "literal.h"
 #include "token.h"
 
-typedef struct {
+typedef struct Expr {
     enum {
         EXPR_UNARY,
         EXPR_BINARY,
