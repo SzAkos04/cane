@@ -68,7 +68,7 @@ static int print_literal(Literal literal) {
         printf("%ld\n", literal.data.Integer);
         break;
     case LITERAL_FLOAT:
-        printf("%g\n", literal.data.Float);
+        printf("%.16g\n", literal.data.Float);
         break;
     case LITERAL_BOOLEAN:
         printf("%s\n", literal.data.Boolean ? "true" : "false");
