@@ -317,7 +317,9 @@ static Token next(Lexer *self) {
             lexeme[len] = '\0';
 
             TokenType tt = TT_IDENTIFIER;
-            if (!strcmp(lexeme, "print")) {
+            if (!strcmp(lexeme, "let")) {
+                tt = TT_LET;
+            } else if (!strcmp(lexeme, "print")) {
                 tt = TT_PRINT;
             } else if (!strcmp(lexeme, "true") || !strcmp(lexeme, "false")) {
                 tt = TT_BOOL;

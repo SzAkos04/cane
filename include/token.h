@@ -43,6 +43,7 @@ typedef enum {
     TT_NULL,
 
     // keywords
+    TT_LET,   // `let`
     TT_PRINT, // `print`
 
     TT_COMMENT,

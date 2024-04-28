@@ -3,6 +3,7 @@
 #include "lexer.h"
 #include "parser.h"
 #include "stmt.h"
+#include "token.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -101,6 +102,16 @@ int main(int argc, char **argv) {
         return EXIT_FAILURE;
     }
     free(buf);
+
+#if DEBUG
+    for (int i = 0; tokens[i].type != TT_EOF; i++) {
+        printf("%s ", tokens[i].lexeme);
+        if (tokens[i].type == TT_SEMICOLON) {
+            printf("\n");
+        }
+    }
+    printf("\n");
+#endif
 
     // continue
     Parser parser = parser_new(tokens);

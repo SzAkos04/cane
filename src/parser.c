@@ -7,7 +7,6 @@
 
 #include <math.h>
 #include <stdbool.h>
-#include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -49,8 +48,8 @@ static Literal parse_literal(Parser *self) {
             .data.null = NULL,
         };
     default:
-        error("parsing literals not yet implemented");
-        return (Literal){.type = LITERAL_NULL};
+        error("not a literal");
+        return (Literal){0};
     }
 }
 
@@ -88,6 +87,69 @@ static Expr parse_expr(Parser *self) {
         .type = EXPR_VARIABLE,
         .data.Variable = self->tokens[self->current].lexeme,
     };
+}
+
+static Stmt parse_let(Parser *self) {
+    char err_msg[128];
+    if (self->tokens[self->current].type != TT_LET) {
+        snprintf(err_msg, sizeof(err_msg),
+                 "expected `let` keyword at line %d, found %s",
+                 self->tokens[self->current].line,
+                 self->tokens[self->current].lexeme);
+        error(err_msg);
+        return (Stmt){.type = STMT_ERR};
+    }
+    self->current++; // consume `let`
+
+    if (self->tokens[self->current].type != TT_IDENTIFIER) {
+        snprintf(err_msg, sizeof(err_msg),
+                 "expected identifier at line %d, found %s",
+                 self->tokens[self->current].line,
+                 self->tokens[self->current].lexeme);
+        error(err_msg);
+        return (Stmt){.type = STMT_ERR};
+    }
+    char *name = self->tokens[self->current].lexeme;
+    self->current++; // consume identifiers
+
+    if (self->tokens[self->current].type == TT_SEMICOLON) {
+        self->current++; // consume `;`
+        return (Stmt){
+            .type = STMT_LET,
+            .data.Let =
+                {
+                    .name = name,
+                    .expr = (Expr){0},
+                },
+        };
+    } else if (self->tokens[self->current].type == TT_EQUAL) {
+        self->current++; // consume `=`
+        Expr expr = parse_expr(self);
+        self->current++; // consume expression's last element
+        if (self->tokens[self->current].type != TT_SEMICOLON) {
+            snprintf(err_msg, sizeof(err_msg),
+                     "expected `;` at line %d, found %s",
+                     self->tokens[self->current].line,
+                     self->tokens[self->current].lexeme);
+            error(err_msg);
+            return (Stmt){.type = STMT_ERR};
+        }
+        self->current++; // consume `;`
+        return (Stmt){
+            .type = STMT_LET,
+            .data.Let =
+                {
+                    .name = name,
+                    .expr = expr,
+                },
+        };
+    }
+
+    snprintf(
+        err_msg, sizeof(err_msg), "expected `;` or `=` at line %d, found %s",
+        self->tokens[self->current].line, self->tokens[self->current].lexeme);
+    error(err_msg);
+    return (Stmt){.type = STMT_ERR};
 }
 
 static Stmt parse_print(Parser *self) {
@@ -143,12 +205,16 @@ static Stmt parse_print(Parser *self) {
 
 static Stmt parse_stmt(Parser *self) {
     switch (self->tokens[self->current].type) {
+    case TT_LET:
+        return parse_let(self);
     case TT_PRINT:
         return parse_print(self);
     case TT_EOF:
         return (Stmt){.type = STMT_EOF};
     default:
-        error("not yet implemented");
+        /* printf("%d\n", self->tokens[self->current].type); */
+        printf("%s\n", self->tokens[self->current].lexeme);
+        error("other statements not yet implemented (parser)");
         return (Stmt){.type = STMT_ERR};
     }
 }

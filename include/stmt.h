@@ -5,6 +5,7 @@
 typedef struct Stmt {
     enum {
         STMT_EXPR,
+        STMT_LET,
         STMT_PRINT,
 
         STMT_EOF,
@@ -12,6 +13,10 @@ typedef struct Stmt {
     } type;
     union {
         Expr Expression;
+        struct {
+            char *name;
+            Expr expr;
+        } Let;
         struct {
             Expr expr;
         } Print;

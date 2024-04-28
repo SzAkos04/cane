@@ -1,6 +1,10 @@
 #pragma once
 
-#include <stdio.h>
+#ifdef __OPTIMIZE__
+#define DEBUG 0
+#else
+#define DEBUG 1
+#endif
 
 #define RESET "\033[;0m"
 #define BOLD "\033[0;1m"
